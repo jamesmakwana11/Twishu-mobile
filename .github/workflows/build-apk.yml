@@ -25,13 +25,15 @@ jobs:
           pip3 install --upgrade pip
           pip3 install buildozer cython==3.0.11
 
-      - name: Accept All Android SDK Licenses
+      - name: Accept Android Licenses & Install Required Packages
         run: |
           echo "y" | sdkmanager --licenses || true
           echo "y" | sdkmanager --update || true
           yes | sdkmanager --licenses || true
+          sdkmanager --install "build-tools;34.0.0" "platforms;android-33" "platform-tools" || true
+          yes | sdkmanager --licenses || true
 
-      - name: Build APK
+      - name: Build APK with Buildozer
         run: |
           buildozer -v android debug
         working-directory: ./
