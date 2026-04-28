@@ -13,20 +13,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt-get update -y
           sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk pkg-config \
             libgl1-mesa-dev libgles2-mesa-dev libgstreamer1.0-0 libgstreamer-plugins-base1.0-0 \
             libsm6 libxext6 libxrender1 libx11-dev libssl-dev
 
+      - name: Install Buildozer + Cython
+        run: |
           pip3 install --upgrade pip
           pip3 install buildozer cython==3.0.11
 
-      - name: Accept Android SDK Licenses
+      - name: Accept All Android SDK Licenses
         run: |
           echo "y" | sdkmanager --licenses || true
           echo "y" | sdkmanager --update || true
+          yes | sdkmanager --licenses || true
 
       - name: Build APK
         run: |
