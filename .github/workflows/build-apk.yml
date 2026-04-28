@@ -1,26 +1,42 @@
-[app]
-title = Twishu
-package.name = twishu
-package.domain = org.twishu
-source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
-version = 1.0
+name: Build Twishu APK
 
-requirements = python3,kivy,kivymd,plyer,speechrecognition,groq,requests
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
 
-android.permissions = INTERNET,RECORD_AUDIO,READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-orientation = portrait
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-android.api = 33
-android.minapi = 21
-android.build_tools = 34.0.0
-android.accept_sdk_license = True     # ← Yeh line sabse important hai
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk pkg-config \
+            libgl1-mesa-dev libgles2-mesa-dev libgstreamer1.0-0 libgstreamer-plugins-base1.0-0 \
+            libsm6 libxext6 libxrender1 libx11-dev libssl-dev
 
-android.archs = arm64-v8a, armeabi-v7a
-fullscreen = 0
-android.allow_backup = True
+      - name: Install Buildozer + Cython
+        run: |
+          pip3 install --upgrade pip
+          pip3 install buildozer cython==3.0.11
 
-[buildozer]
-log_level = 2
-warn_on_root = 1
+      - name: Accept Android Licenses
+        run: |
+          echo "y" | sdkmanager --licenses || true
+          yes | sdkmanager --licenses || true
+
+      - name: Build APK
+        run: |
+          buildozer -v android debug
+        working-directory: ./
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Twishu-APK
+          path: bin/*.apk
