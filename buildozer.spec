@@ -16,29 +16,28 @@ source.include_exts = py,png,jpg,kv,atlas
 # Version
 version = 1.0
 
-# Requirements (important - sab libraries)
+# Requirements
 requirements = python3,kivy,kivymd,plyer,speechrecognition,groq,requests
 
-# Permissions (Mic + Internet sabse zaroori)
+# Permissions
 android.permissions = INTERNET,RECORD_AUDIO,READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
 
 # Orientation
 orientation = portrait
 
-# Android API settings (modern phones ke liye best)
+# Android Build Settings (Important Fix)
 android.api = 33
 android.minapi = 21
+android.build_tools = 34.0.0        # ← Yeh line add ki hai (license error fix)
 
-# Architectures (dono common phones support karne ke liye)
+# Architectures
 android.archs = arm64-v8a, armeabi-v7a
 
-# Fullscreen nahi rakhna (better UX)
+# Other settings
 fullscreen = 0
-
-# Backup allowed
 android.allow_backup = True
 
-# Log level (debug ke liye)
+# Log level
 [buildozer]
 log_level = 2
 warn_on_root = 1
